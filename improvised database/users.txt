@@ -1,1 +1,3 @@
 user1 password1 Client
+user2  Client
+user3 password3 Client

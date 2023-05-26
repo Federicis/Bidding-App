@@ -2,29 +2,16 @@ package account;
 
 import app.Application;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public abstract class AccountUtils {
-    public static void login(Scanner input, UserEntity currentUser, SortedMap<String, UserEntity> accounts){
-        if(currentUser != null)
-            System.out.println("Somebody is already connected!");
-        System.out.println("Enter your credentials:");
-        System.out.println("Username:");
-        String username;
-        while((username = input.nextLine().trim()).isEmpty());
-        System.out.println("Password:");
-        String password;
-        while((password = input.nextLine().trim()).isEmpty());
-        UserEntity possibleUser = accounts.get(username);
-        if(possibleUser == null || !possibleUser.getPassword().equals(password))
-            System.out.println("Username sau parola gresita!");
-        else
-            System.out.println("Conectare reusita!");
-    }
-
     public static List<Client> getAllClientAccounts(){
         List<Client> clientAccounts = new ArrayList<>();
-        SortedMap<String, UserEntity> accountsMap = Application.getAccounts();
+        SortedMap<String, UserEntity> accountsMap = Application.getAllAccounts();
 
         if(accountsMap == null)
             return null;
@@ -42,7 +29,7 @@ public abstract class AccountUtils {
     }
     public static List<Admin> getAllAdminAccounts(){
         List<Admin> adminAccounts = new ArrayList<>();
-        SortedMap<String, UserEntity> accountsMap = Application.getAccounts();
+        SortedMap<String, UserEntity> accountsMap = Application.getAllAccounts();
 
         if(accountsMap == null)
             return null;
@@ -57,5 +44,22 @@ public abstract class AccountUtils {
             }
         }
         return adminAccounts;
+    }
+
+    public static int getFirstAvailableId(){
+        return Application.getAllAccounts().size() + 1;
+    }
+
+    public static boolean addUserToDatabase(UserEntity user){
+        try{
+            Files.writeString(Path.of("improvised database/users.txt"), ((new StringBuilder())
+                    .append("\n").append(user.getUsername())
+                    .append(" ") .append(user.getPassword())
+                    .append(" ") .append(user.getUserType())).toString(), StandardOpenOption.APPEND);
+        }
+        catch (IOException e) {
+            return false;
+        }
+        return true;
     }
 }

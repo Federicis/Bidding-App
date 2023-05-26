@@ -7,8 +7,8 @@ public class UserEntity {
 
     protected String userType;
 
-    public UserEntity(int id, String username, String password) {
-        this.id = id;
+    public UserEntity( String username, String password) {
+        this.id = AccountUtils.getFirstAvailableId();
         this.username = username;
         this.password = password;
     }
